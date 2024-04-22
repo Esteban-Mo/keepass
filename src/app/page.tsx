@@ -3,8 +3,11 @@
 import {Stack} from '@mui/material';
 import {useState} from 'react';
 import TitleLoginPage from '@/components/LoginPage/Title';
+import LoginCard from '@/components/LoginPage/LoginCard';
+import SignInCard from '@/components/LoginPage/SignIn';
+import {ToastContainer} from 'react-toastify';
 
-enum State {
+export enum State {
     LOGIN,
     SIGNUP
 }
@@ -19,25 +22,14 @@ export default function Home() {
             flexDirection: 'row',
         }}>
 
-            <Stack sx={{
-                height: '100%',
-                width: state === State.LOGIN ? '0%' : '100%',
-                backgroundColor: 'rgba(52,177,180,0.25)',
-                transition: 'width 0.5s'
-            }}>
+            <ToastContainer position={state === State.LOGIN ? 'bottom-right' : 'bottom-left'}/>
 
-            </Stack>
+
+            <SignInCard state={state} setState={setState}/>
 
             <TitleLoginPage/>
 
-            <Stack sx={{
-                height: '100%',
-                width: state === State.LOGIN ? '100%' : '0%',
-                backgroundColor: 'rgba(180,52,120,0.25)',
-                transition: 'width 0.5s'
-            }}>
-
-            </Stack>
+            <LoginCard state={state} setState={setState}/>
 
         </Stack>
     );
