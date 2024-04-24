@@ -3,15 +3,28 @@ import {Visibility, VisibilityOff} from '@mui/icons-material';
 import {useState} from 'react';
 import GeneratePasswordIcon from '@mui/icons-material/VpnKey';
 import {toast} from 'react-toastify';
+import {createIdentifier} from '@/actions/identifiers/identifier.action';
+import {useJwt} from 'react-jwt';
 
 interface Props {
     open: boolean;
     setOpen: (open: boolean) => void;
 }
 
+interface DecodedToken {
+    email: string;
+    iat: number;
+    exp: number;
+}
+
+const token = sessionStorage.getItem('token');
+
 export default function CreateNewPasswordModal(props: Props) {
+    const [label, setLabel] = useState('');
+    const [username, setUsername] = useState('');
     const [password, setPassword] = useState('');
     const [showPassword, setShowPassword] = useState(false);
+    const {decodedToken, isExpired} = useJwt<DecodedToken>(token!);
 
     const generatePassword = () => {
         const length = 24;
@@ -37,6 +50,28 @@ export default function CreateNewPasswordModal(props: Props) {
         navigator.clipboard.writeText(text);
     }
 
+    const handleCreate = async () => {
+        try {
+
+            if (!decodedToken) {
+                toast.error('Impossible de créer un identifiant sans être connecté');
+                return;
+            }
+
+            if (label === '' || username === '' || password === '') {
+                toast.error('Veuillez remplir tous les champs');
+                return;
+            }
+
+            await createIdentifier(decodedToken.email, label, username, password);
+            toast.success('Identifiant créé avec succès');
+            props.setOpen(false);
+        } catch (error) {
+            console.error('Erreur lors de la création de l\'identifiant :', error);
+            toast.error('Une erreur est survenue lors de la création de l\'identifiant');
+        }
+    }
+
     return (
         <Dialog
             open={props.open}
@@ -57,6 +92,8 @@ export default function CreateNewPasswordModal(props: Props) {
                 <TextField
                     label="Label"
                     variant="outlined"
+                    value={label}
+                    onChange={(e) => setLabel(e.target.value)}
                     fullWidth
                     sx={{
                         marginTop: '20px',
@@ -73,6 +110,8 @@ export default function CreateNewPasswordModal(props: Props) {
                 <TextField
                     label="Identifiant"
                     variant="outlined"
+                    value={username}
+                    onChange={(e) => setUsername(e.target.value)}
                     fullWidth
                     sx={{
                         marginTop: '20px',
@@ -132,6 +171,7 @@ export default function CreateNewPasswordModal(props: Props) {
                             backgroundColor: 'rgb(41,50,57)',
                         },
                     }}
+                    onClick={handleCreate}
                 >
                     Créer
                 </Button>

@@ -1,11 +1,14 @@
 "use server";
 
-import {PrismaClient} from '@prisma/client';
+import {PrismaClient, User} from '@prisma/client';
 import bcrypt from 'bcrypt';
+import jwt from 'jsonwebtoken';
 
 const prisma = new PrismaClient();
 
-export const getUser = async (email: string, password: string) => {
+export type UserWithToken = User & { token: string };
+
+export const getUser = async (email: string, password: string): Promise<UserWithToken | null> => {
     const user = await prisma.user.findUnique({
         where: {
             email: email
@@ -22,7 +25,14 @@ export const getUser = async (email: string, password: string) => {
         return null;
     }
 
-    return true;
+    const token = jwt.sign({email: user.email}, process.env.JWT_SECRET!, {
+        expiresIn: '1h'
+    });
+
+    return {
+        ...user,
+        token: token
+    };
 }
 
 export const checkIfUserExist = async (email: string) => {

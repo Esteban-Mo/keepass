@@ -1,6 +1,31 @@
-import {Stack} from '@mui/material';
+import {Avatar, Button, Stack} from '@mui/material';
+import {useJwt} from 'react-jwt';
+import {useEffect} from 'react';
+import {useRouter} from 'next/navigation';
+import {toast} from 'react-toastify';
+
+const token = sessionStorage.getItem('token');
+
+interface DecodedToken {
+    email: string;
+    iat: number;
+    exp: number;
+}
 
 export default function NavMenu() {
+    const {decodedToken, isExpired} = useJwt<DecodedToken>(token!);
+    const router = useRouter();
+
+    useEffect(() => {
+        console.log(decodedToken?.email);
+    }, [decodedToken]);
+
+    const signOut = () => {
+        sessionStorage.removeItem('token');
+        router.push('/');
+        toast.success('Déconnexion réussie');
+    }
+
     return (
         <Stack sx={{
             height: '100%',
@@ -61,7 +86,75 @@ export default function NavMenu() {
                     width: '100%',
                 }}>
 
+                </Stack>
 
+                <Stack sx={{
+                    height: '120px',
+                    width: '100%',
+                    gap: '5px',
+                }}>
+
+                    <Stack sx={{
+                        height: '50%',
+                        width: '100%',
+                        color: 'rgba(232,232,232,0.87)',
+                        fontSize: '0.9em',
+                        flexDirection: 'row',
+                    }}>
+
+                        <Stack sx={{
+                            height: '100%',
+                            width: '85px',
+                            color: 'rgba(232,232,232,0.87)',
+                            fontSize: '0.9em',
+                            justifyContent: 'center',
+                            alignItems: 'center',
+                        }}>
+                            <Avatar>
+                                A
+                            </Avatar>
+                        </Stack>
+
+                        <Stack sx={{
+                            height: '100%',
+                            width: '100%',
+                            color: 'rgba(232,232,232,0.87)',
+                            fontSize: '0.9em',
+                            justifyContent: 'center',
+                        }}>
+
+                            <Stack sx={{
+                                width: '100%',
+                                color: 'rgba(232,232,232,0.87)',
+                                fontSize: '0.9em',
+                            }}>
+                                {decodedToken?.email}
+                            </Stack>
+
+                            <Stack sx={{
+                                width: '100%',
+                                color: 'rgba(179,179,179,0.87)',
+                                fontSize: '0.7em',
+                            }}>
+                                Version gratuite
+                            </Stack>
+
+                        </Stack>
+
+                    </Stack>
+
+                    <Button
+                        variant="text"
+                        sx={{
+                            width: '100%',
+                            color: 'rgba(232,232,232,0.87)',
+                            fontSize: '0.9em',
+                            justifyContent: 'center',
+                        }}
+                        onClick={signOut}
+                    >
+                        DECONNEXION
+                    </Button>
 
                 </Stack>
 
