@@ -1,6 +1,6 @@
 "use client"
 
-import {Stack, InputBase, IconButton, Button, Avatar, Typography} from '@mui/material';
+import {Stack, InputBase, IconButton, Button} from '@mui/material';
 import SearchIcon from '@mui/icons-material/Search';
 import NavMenu from '@/components/Dashboard/NavMenu';
 import {useEffect, useState} from 'react';
@@ -9,6 +9,9 @@ import {useRouter} from 'next/navigation';
 import {checkTokenValidity} from '@/actions/authentification/auth.action';
 import {getIdentifier} from '@/actions/identifiers/identifier.action';
 import {useJwt} from 'react-jwt';
+import ListPassword from '@/components/Dashboard/ListPassword';
+import identifierInformation from '@/components/Dashboard/IdentifierInformation';
+import IdentifierInformation from '@/components/Dashboard/IdentifierInformation';
 
 interface DecodedToken {
     email: string;
@@ -24,6 +27,11 @@ export default function Dashboard() {
     const router = useRouter();
     const [isTokenValid, setIsTokenValid] = useState(false);
     const {decodedToken, isExpired} = useJwt<DecodedToken>(token!);
+    const [selectedIdentifier, setSelectedIdentifier] = useState<any>(null);
+
+    useEffect(() => {
+        console.log(selectedIdentifier)
+    }, [selectedIdentifier]);
 
     useEffect(() => {
         const checkTokenAndRedirect = async () => {
@@ -54,6 +62,12 @@ export default function Dashboard() {
 
         void checkTokenAndRedirect();
     }, [router]);
+
+    const refreshList = async () => {
+        if (!decodedToken) return;
+        const identifiers = await getIdentifier(decodedToken.email);
+        setListPassword(identifiers);
+    }
 
     useEffect(() => {
         const getIdentifierList = async () => {
@@ -138,69 +152,25 @@ export default function Dashboard() {
                             flexDirection: 'row',
                             backgroundColor: 'rgb(17,20,25)',
                             justifyContent: 'center',
-                            alignItems: 'center',
                         }}>
                             {listPassword && (
                                 <>
-                                    <Stack sx={{
-                                        height: '100%',
-                                        width: '80%',
-                                        gap: '5px',
-                                        flexDirection: 'row',
-                                    }}>
+                                    <ListPassword selectedIdentifier={selectedIdentifier} setSelectedIdentifier={setSelectedIdentifier} listPassword={listPassword}/>
 
-
-                                        <Stack sx={{
-                                            height: '60px',
-                                            width: '50px',
-                                            justifyContent: 'center',
-                                        }}>
-
-                                            <Avatar
-                                                sx={{
-                                                    borderRadius: '10px',
-                                                    backgroundColor: 'rgba(66,38,73,0.87)',
-                                                    marginLeft: '10px',
-                                                }}
-                                            >
-                                                A
-                                            </Avatar>
-
-                                        </Stack>
-
-                                        <Stack sx={{
-                                            height: '60px',
+                                    <Stack
+                                        sx={{
+                                            height: '100%',
                                             width: '100%',
-                                            justifyContent: 'center',
-                                            marginLeft: '10px',
-                                            color: '#ffffff',
-                                            fontSize: '0.9em',
-                                        }}>
-                                            Ldlc
-                                            <br/>
-                                            <Typography sx={{
-                                                color: '#c8c8c8',
-                                                fontSize: '0.8em',
-                                            }}>
-                                                test@test.com
-                                            </Typography>
-                                        </Stack>
+                                            WebkitBoxShadow: '-7px 0px 21px -2px rgba(44,47,60, 0.87)',
+                                            boxShadow: '-7px 0px 21px -2px rgba(44,47,60, 0.87)',
+                                        }}
+                                    >
 
-
-                                    </Stack>
-
-                                    <Stack sx={{
-                                        height: '100%',
-                                        width: '100%',
-                                        WebkitBoxShadow: '-7px 0px 21px -2px rgba(44,47,60, 0.87)',
-                                        boxShadow: '-7px 0px 21px -2px rgba(44,47,60, 0.87)',
-                                    }}>
-
+                                        <IdentifierInformation selectedIdentifier={selectedIdentifier}/>
 
                                     </Stack>
                                 </>
                             )}
-
                             {!listPassword && (
                                 <Stack sx={{
                                     color: '#c8c8c8',
@@ -212,7 +182,7 @@ export default function Dashboard() {
                         </Stack>
                     </Stack>
 
-                    <CreateNewPasswordModal open={openDialog} setOpen={setOpenDialog}/>
+                    <CreateNewPasswordModal open={openDialog} setOpen={setOpenDialog} refreshList={refreshList}/>
                 </Stack>
             )}
 

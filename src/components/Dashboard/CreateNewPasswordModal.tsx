@@ -9,6 +9,7 @@ import {useJwt} from 'react-jwt';
 interface Props {
     open: boolean;
     setOpen: (open: boolean) => void;
+    refreshList: () => void;
 }
 
 interface DecodedToken {
@@ -66,6 +67,7 @@ export default function CreateNewPasswordModal(props: Props) {
             await createIdentifier(decodedToken.email, label, username, password);
             toast.success('Identifiant créé avec succès');
             props.setOpen(false);
+            props.refreshList();
         } catch (error) {
             console.error('Erreur lors de la création de l\'identifiant :', error);
             toast.error('Une erreur est survenue lors de la création de l\'identifiant');
