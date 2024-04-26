@@ -1,4 +1,4 @@
-import {Dialog, Stack, TextField, Button, InputAdornment, IconButton} from '@mui/material';
+import {Dialog, Stack, TextField, Button, InputAdornment, IconButton, Tooltip} from '@mui/material';
 import {Visibility, VisibilityOff} from '@mui/icons-material';
 import {useState} from 'react';
 import GeneratePasswordIcon from '@mui/icons-material/VpnKey';
@@ -159,9 +159,11 @@ export default function CreateNewPasswordModal(props: Props) {
                             ),
                         }}
                     />
-                    <IconButton onClick={generatePassword}>
-                        <GeneratePasswordIcon/>
-                    </IconButton>
+                    <Tooltip title={'Générer un mot de passe'} placement="top">
+                        <IconButton onClick={generatePassword}>
+                            <GeneratePasswordIcon/>
+                        </IconButton>
+                    </Tooltip>
                 </Stack>
                 <Button
                     variant="contained"
