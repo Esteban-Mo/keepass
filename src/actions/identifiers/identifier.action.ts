@@ -53,10 +53,10 @@ export const createIdentifier = async (userMail: string, label: string, username
     });
 }
 
-export const deleteIdentifier = async (id: number) => {
+export const deleteIdentifier = async (id: string) => {
     return prisma.identifier.delete({
         where: {
-            id: id
+            id: parseInt(id)
         }
     });
 }

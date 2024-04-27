@@ -1,5 +1,5 @@
-import {Stack, IconButton} from '@mui/material';
-import {Key, Person, VisibilityOff, Visibility} from '@mui/icons-material';
+import {Stack, IconButton, Typography, Button} from '@mui/material';
+import {Key, Person, VisibilityOff, Visibility, Newspaper, Update, Edit} from '@mui/icons-material';
 import {useState} from 'react';
 import {toast} from 'react-toastify';
 
@@ -8,6 +8,8 @@ interface Identifier {
     label: string;
     username: string;
     password: string;
+    createdAt: string;
+    updatedAt: string;
 }
 
 interface Props {
@@ -24,6 +26,19 @@ export default function IdentifierInformation(props: Readonly<Props>) {
     const copyToClipboard = (text: string) => {
         navigator.clipboard.writeText(text);
         toast.success('Copié dans le presse-papier');
+    };
+
+    const formatDate = (dateString: string) => {
+        const date = new Date(dateString);
+        const options: Intl.DateTimeFormatOptions = {
+            day: '2-digit',
+            month: '2-digit',
+            year: 'numeric',
+            hour: '2-digit',
+            minute: '2-digit',
+            second: '2-digit',
+        };
+        return date.toLocaleString('fr-FR', options);
     };
 
     return (
@@ -117,20 +132,23 @@ export default function IdentifierInformation(props: Readonly<Props>) {
                             marginRight: '10px',
                         }}
                     >
-                        {showPassword ? <VisibilityOff
+                        {showPassword ? (
+                            <VisibilityOff
                                 sx={{color: '#ffffff'}}
                                 onClick={(event) => {
-                                    setShowPassword(false)
-                                    event.stopPropagation()
-                                }}/>
-                            :
+                                    setShowPassword(false);
+                                    event.stopPropagation();
+                                }}
+                            />
+                        ) : (
                             <Visibility
                                 sx={{color: '#ffffff'}}
                                 onClick={(event) => {
-                                    setShowPassword(true)
-                                    event.stopPropagation()
-                                }}/>
-                        }
+                                    setShowPassword(true);
+                                    event.stopPropagation();
+                                }}
+                            />
+                        )}
                     </IconButton>
                 </Stack>
 
@@ -140,9 +158,87 @@ export default function IdentifierInformation(props: Readonly<Props>) {
                     border: '1px solid #363636',
                     borderRadius: '10px 10px 10px 10px',
                     marginTop: '40px',
+                    alignItems: 'center',
+                    position: 'relative',
                 }}>
+                    <Stack
+                        sx={{
+                            height: '65px',
+                            width: '98%',
+                            alignItems: 'center',
+                            flexDirection: 'row',
+                            marginTop: '10px',
+                        }}
+                    >
+                        <Newspaper/>
+                        <Stack>
+                            <Typography
+                                sx={{
+                                    color: '#dfdfdf',
+                                    fontSize: '0.5em',
+                                    marginLeft: '10px',
+                                }}>
+                                Date de création <br/>
+                            </Typography>
+
+                            <Typography
+                                sx={{
+                                    color: '#808080',
+                                    fontSize: '0.5em',
+                                    marginLeft: '10px',
+                                }}>
+                                {props.selectedIdentifier && formatDate(props.selectedIdentifier.createdAt)}
+                            </Typography>
+                        </Stack>
+                    </Stack>
+
+                    <Stack
+                        sx={{
+                            height: '65px',
+                            width: '98%',
+                            alignItems: 'center',
+                            flexDirection: 'row',
+                            marginTop: '5px',
+                        }}
+                    >
+                        <Update/>
+                        <Stack>
+                            <Typography
+                                sx={{
+                                    color: '#dfdfdf',
+                                    fontSize: '0.5em',
+                                    marginLeft: '10px',
+                                }}>
+                                Date de la dernière mise à jours <br/>
+                            </Typography>
+
+                            <Typography
+                                sx={{
+                                    color: '#808080',
+                                    fontSize: '0.5em',
+                                    marginLeft: '10px',
+                                }}>
+                                {props.selectedIdentifier && formatDate(props.selectedIdentifier.updatedAt)}
+                            </Typography>
+                        </Stack>
+                    </Stack>
+
+                    <Button
+                        variant="contained"
+                        sx={{
+                            position: 'absolute',
+                            bottom: '10px',
+                            right: '10px',
+                            backgroundColor: 'rgb(31,35,44)',
+                            '&:hover': {
+                                backgroundColor: 'rgba(41,50,57,0)',
+                            },
+                        }}>
+                        <Edit/>
+                    </Button>
+
                 </Stack>
             </Stack>
         </Stack>
-    )
+    );
 }

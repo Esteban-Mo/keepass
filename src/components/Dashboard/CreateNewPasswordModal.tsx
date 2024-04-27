@@ -20,7 +20,7 @@ interface DecodedToken {
 
 const token = sessionStorage.getItem('token');
 
-export default function CreateNewPasswordModal(props: Props) {
+export default function CreateNewPasswordModal(props: Readonly<Props>) {
     const [label, setLabel] = useState('');
     const [username, setUsername] = useState('');
     const [password, setPassword] = useState('');
@@ -150,7 +150,10 @@ export default function CreateNewPasswordModal(props: Props) {
                             endAdornment: (
                                 <InputAdornment position="end">
                                     <IconButton
-                                        onClick={() => setShowPassword(!showPassword)}
+                                        onClick={() => {
+                                            copyToClipboard(password);
+                                            setShowPassword(!showPassword)
+                                        }}
                                         edge="end"
                                     >
                                         {showPassword ? <VisibilityOff/> : <Visibility/>}

@@ -10,7 +10,6 @@ import {checkTokenValidity} from '@/actions/authentification/auth.action';
 import {getIdentifier} from '@/actions/identifiers/identifier.action';
 import {useJwt} from 'react-jwt';
 import ListPassword from '@/components/Dashboard/ListPassword';
-import identifierInformation from '@/components/Dashboard/IdentifierInformation';
 import IdentifierInformation from '@/components/Dashboard/IdentifierInformation';
 
 interface DecodedToken {
@@ -155,7 +154,7 @@ export default function Dashboard() {
                         }}>
                             {listPassword && (
                                 <>
-                                    <ListPassword selectedIdentifier={selectedIdentifier} setSelectedIdentifier={setSelectedIdentifier} listPassword={listPassword}/>
+                                    <ListPassword selectedIdentifier={selectedIdentifier} setSelectedIdentifier={setSelectedIdentifier} listPassword={listPassword} refreshList={refreshList}/>
 
                                     <Stack
                                         sx={{

@@ -158,16 +158,17 @@ export default function LoginCard(props: Readonly<Props>) {
                     alignItems: 'center',
                 }}>
 
-                    <Button variant="text"
-                            sx={{
-                                width: '80%',
-                                marginTop: '20px',
-                                color: 'rgb(17,20,25)',
-                                '&:hover': {
-                                    backgroundColor: 'rgba(41,50,57,0)',
-                                },
-                            }}
-                            onClick={() => props.setState(State.SIGNUP)}>
+                    <Button
+                        variant="text"
+                        sx={{
+                            width: '80%',
+                            marginTop: '20px',
+                            color: 'rgb(17,20,25)',
+                            '&:hover': {
+                                backgroundColor: 'rgba(41,50,57,0)',
+                            },
+                        }}
+                        onClick={() => props.setState(State.SIGNUP)}>
                         Pas de compte ? Inscrivez-vous
                     </Button>
 
