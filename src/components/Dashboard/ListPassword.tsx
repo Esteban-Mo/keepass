@@ -15,6 +15,7 @@ interface Props {
     setSelectedIdentifier: (identifier: Identifier | null) => void;
     listPassword: Identifier[];
     refreshList: () => void;
+    searchValue: string;
 }
 
 export default function ListPassword(props: Readonly<Props>) {
@@ -47,7 +48,12 @@ export default function ListPassword(props: Readonly<Props>) {
             backgroundColor: 'rgb(17,20,25)',
             justifyContent: 'start',
         }}>
-            {props.listPassword.map((identifier) => (
+            {props.listPassword.filter((item) => {
+                const searchTerm = props.searchValue.toLowerCase();
+                const label = item.label.toLowerCase();
+                const identifiant = item.username.toLowerCase();
+                return label.includes(searchTerm) || identifiant.includes(searchTerm);
+            }).map((identifier) => (
                 <Stack
                     key={identifier.id}
                     sx={{
@@ -63,9 +69,7 @@ export default function ListPassword(props: Readonly<Props>) {
                         },
                     }}
                     onClick={() =>
-                        props.setSelectedIdentifier(
-                            props.selectedIdentifier === identifier ? null : identifier
-                        )
+                        props.setSelectedIdentifier(identifier)
                     }
                 >
                     <Stack

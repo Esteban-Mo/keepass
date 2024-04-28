@@ -19,15 +19,20 @@ interface DecodedToken {
     exp: number;
 }
 
-const token = sessionStorage.getItem('token');
-
 export default function Dashboard() {
     const [listPassword, setListPassword] = useState<any[]>([]);
     const [openDialog, setOpenDialog] = useState(false);
-    const router = useRouter();
     const [isTokenValid, setIsTokenValid] = useState(false);
-    const {decodedToken, isExpired} = useJwt<DecodedToken>(token!);
     const [selectedIdentifier, setSelectedIdentifier] = useState<any>(null);
+    const [searchValue, setSearchValue] = useState('');
+    const [token, setToken] = useState('' as string);
+    const {decodedToken, isExpired} = useJwt<DecodedToken>(token!);
+    const router = useRouter();
+
+    useEffect(() => {
+        setListPassword([]);
+        setToken(sessionStorage.getItem('token') as string);
+    }, []);
 
     useEffect(() => {
         setSelectedIdentifier(listPassword[0])
@@ -99,7 +104,7 @@ export default function Dashboard() {
                     width: '100%',
                     flexDirection: 'row',
                 }}>
-                    <NavMenu/>
+                    <NavMenu listPassword={listPassword} refreshList={refreshList}/>
 
                     <Stack sx={{
                         height: '100%',
@@ -126,6 +131,8 @@ export default function Dashboard() {
                                     width: '100%',
                                     color: 'white',
                                 }}
+                                value={searchValue}
+                                onChange={(e) => setSearchValue(e.target.value)}
                                 startAdornment={
                                     <IconButton size="small" sx={{color: 'rgba(255, 255, 255, 0.5)'}}>
                                         <SearchIcon/>
@@ -157,7 +164,8 @@ export default function Dashboard() {
                         }}>
                             {listPassword.length > 0 && (
                                 <>
-                                    <ListPassword selectedIdentifier={selectedIdentifier} setSelectedIdentifier={setSelectedIdentifier} listPassword={listPassword} refreshList={refreshList}/>
+                                    <ListPassword selectedIdentifier={selectedIdentifier} setSelectedIdentifier={setSelectedIdentifier} listPassword={listPassword} refreshList={refreshList}
+                                                  searchValue={searchValue}/>
 
                                     <Stack
                                         sx={{
