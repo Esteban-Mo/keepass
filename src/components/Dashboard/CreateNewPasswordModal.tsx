@@ -48,7 +48,7 @@ export default function CreateNewPasswordModal(props: Readonly<Props>) {
     }
 
     const copyToClipboard = (text: string) => {
-        navigator.clipboard.writeText(text);
+        void navigator.clipboard.writeText(text);
     }
 
     const handleCreate = async () => {

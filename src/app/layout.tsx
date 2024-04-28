@@ -15,7 +15,6 @@ export default function RootLayout({children,}: Readonly<{ children: React.React
     return (
         <html lang="en">
             <body className={inter.className}>
-                <ToastContainer position="bottom-right"/>
                 {children}
             </body>
         </html>

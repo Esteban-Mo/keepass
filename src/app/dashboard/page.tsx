@@ -11,6 +11,7 @@ import {getIdentifier} from '@/actions/identifiers/identifier.action';
 import {useJwt} from 'react-jwt';
 import ListPassword from '@/components/Dashboard/ListPassword';
 import IdentifierInformation from '@/components/Dashboard/IdentifierInformation';
+import {ToastContainer} from 'react-toastify';
 
 interface DecodedToken {
     email: string;
@@ -21,7 +22,7 @@ interface DecodedToken {
 const token = sessionStorage.getItem('token');
 
 export default function Dashboard() {
-    const [listPassword, setListPassword] = useState<any[]>();
+    const [listPassword, setListPassword] = useState<any[]>([]);
     const [openDialog, setOpenDialog] = useState(false);
     const router = useRouter();
     const [isTokenValid, setIsTokenValid] = useState(false);
@@ -29,8 +30,8 @@ export default function Dashboard() {
     const [selectedIdentifier, setSelectedIdentifier] = useState<any>(null);
 
     useEffect(() => {
-        console.log(selectedIdentifier)
-    }, [selectedIdentifier]);
+        setSelectedIdentifier(listPassword[0])
+    }, [listPassword]);
 
     useEffect(() => {
         const checkTokenAndRedirect = async () => {
@@ -90,6 +91,8 @@ export default function Dashboard() {
 
     return (
         <>
+            <ToastContainer position="bottom-right"/>
+
             {isTokenValid && (
                 <Stack sx={{
                     height: '100%',
@@ -152,7 +155,7 @@ export default function Dashboard() {
                             backgroundColor: 'rgb(17,20,25)',
                             justifyContent: 'center',
                         }}>
-                            {listPassword && (
+                            {listPassword.length > 0 && (
                                 <>
                                     <ListPassword selectedIdentifier={selectedIdentifier} setSelectedIdentifier={setSelectedIdentifier} listPassword={listPassword} refreshList={refreshList}/>
 
@@ -170,7 +173,7 @@ export default function Dashboard() {
                                     </Stack>
                                 </>
                             )}
-                            {!listPassword && (
+                            {listPassword.length < 1 && (
                                 <Stack sx={{
                                     color: '#c8c8c8',
                                     fontSize: '1.2em',

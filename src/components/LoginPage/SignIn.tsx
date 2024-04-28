@@ -3,7 +3,8 @@ import {State} from '@/app/page';
 import {toast} from 'react-toastify';
 import {useState} from 'react';
 import {Visibility, VisibilityOff} from '@mui/icons-material';
-import {checkIfUserExist, createUser} from '@/actions/users/user.action';
+import {checkIfUserExist, createUser, getUser, UserWithToken} from '@/actions/users/user.action';
+import {useRouter} from 'next/navigation';
 
 interface Props {
     state: State;
@@ -14,6 +15,7 @@ export default function SignInCard(props: Readonly<Props>) {
     const [email, setEmail] = useState('');
     const [password, setPassword] = useState('');
     const [showPassword, setShowPassword] = useState(false);
+    const router = useRouter();
 
     const login = async () => {
         const user = await checkIfUserExist(email);
@@ -27,6 +29,15 @@ export default function SignInCard(props: Readonly<Props>) {
 
             await createUser(email, password);
             toast.success('Inscription réussie');
+
+            const userWithToken: UserWithToken | null = await getUser(email, password);
+            if (userWithToken) {
+                sessionStorage.setItem('token', userWithToken.token);
+                router.push('/dashboard');
+                toast.success('Connexion réussie');
+            } else {
+                toast.error('Une erreur est survenue lors de la connexion');
+            }
         } else {
             toast.error('L\'utilisateur existe déjà');
         }

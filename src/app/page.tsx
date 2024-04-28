@@ -22,6 +22,8 @@ export default function Home() {
             flexDirection: 'row',
         }}>
 
+            <ToastContainer position="bottom-right"/>
+
             <ToastContainer position={state === State.LOGIN ? 'bottom-right' : 'bottom-left'}/>
 
 
