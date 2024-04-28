@@ -3,13 +3,14 @@ import {Visibility, VisibilityOff} from '@mui/icons-material';
 import {useEffect, useState} from 'react';
 import GeneratePasswordIcon from '@mui/icons-material/VpnKey';
 import {toast} from 'react-toastify';
-import {createIdentifier} from '@/actions/identifiers/identifier.action';
+import {updateIdentifier} from '@/actions/identifiers/identifier.action';
 import {useJwt} from 'react-jwt';
 
 interface Props {
     open: boolean;
     setOpen: (open: boolean) => void;
     refreshList: () => void;
+    selectedIdentifier: any;
 }
 
 interface DecodedToken {
@@ -18,14 +19,21 @@ interface DecodedToken {
     exp: number;
 }
 
-
-export default function CreateNewPasswordModal(props: Readonly<Props>) {
+export default function UpdateidentifierInformation(props: Readonly<Props>) {
     const [label, setLabel] = useState('');
     const [username, setUsername] = useState('');
     const [password, setPassword] = useState('');
     const [showPassword, setShowPassword] = useState(false);
     const [token, setToken] = useState('' as string);
     const {decodedToken} = useJwt<DecodedToken>(token!);
+
+    useEffect(() => {
+        if (!props.selectedIdentifier) return;
+        setLabel(props.selectedIdentifier.label);
+        setUsername(props.selectedIdentifier.username);
+        setPassword(props.selectedIdentifier.password);
+        console.log(props.selectedIdentifier);
+    }, [props.selectedIdentifier]);
 
     useEffect(() => {
         setToken(sessionStorage.getItem('token') as string);
@@ -59,7 +67,7 @@ export default function CreateNewPasswordModal(props: Readonly<Props>) {
         try {
 
             if (!decodedToken) {
-                toast.error('Impossible de créer un identifiant sans être connecté');
+                toast.error('Impossible de mettre à jour un identifiant sans être connecté');
                 return;
             }
 
@@ -68,13 +76,13 @@ export default function CreateNewPasswordModal(props: Readonly<Props>) {
                 return;
             }
 
-            await createIdentifier(decodedToken.email, label, username, password);
-            toast.success('Identifiant créé avec succès');
+            await updateIdentifier(props.selectedIdentifier.id, label, username, password);
+            toast.success('Identifiant mis à jour avec succès');
             props.setOpen(false);
             props.refreshList();
         } catch (error) {
-            console.error('Erreur lors de la création de l\'identifiant :', error);
-            toast.error('Une erreur est survenue lors de la création de l\'identifiant');
+            console.error('Erreur lors de la mise à jour de l\'identifiant :', error);
+            toast.error('Une erreur est survenue lors de la mise à jour de l\'identifiant');
         }
     }
 
@@ -183,8 +191,9 @@ export default function CreateNewPasswordModal(props: Readonly<Props>) {
                         },
                     }}
                     onClick={handleCreate}
+                    disabled={label === '' || username === '' || password === '' || (label === props.selectedIdentifier?.label && username === props.selectedIdentifier?.username && password === props.selectedIdentifier?.password)}
                 >
-                    Créer
+                    Mettre à jour
                 </Button>
             </Stack>
         </Dialog>

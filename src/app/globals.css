@@ -5,3 +5,8 @@ html, body {
     width: 100vw;
     overflow: hidden;
 }
+
+input:disabled {
+    background-color: #cccccc;
+    color: #888888;
+}

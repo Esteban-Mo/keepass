@@ -2,6 +2,7 @@ import {Stack, IconButton, Typography, Button} from '@mui/material';
 import {Key, Person, VisibilityOff, Visibility, Newspaper, Update, Edit} from '@mui/icons-material';
 import {useState} from 'react';
 import {toast} from 'react-toastify';
+import UpdateidentifierInformation from '@/components/Dashboard/UpdateidentifierInformation';
 
 interface Identifier {
     id: string;
@@ -14,10 +15,12 @@ interface Identifier {
 
 interface Props {
     selectedIdentifier: Identifier | null;
+    refreshList: () => void;
 }
 
 export default function IdentifierInformation(props: Readonly<Props>) {
     const [showPassword, setShowPassword] = useState(false);
+    const [showUpdateDialog, setShowUpdateDialog] = useState(false);
 
     const handleMouseDownPassword = (event: React.MouseEvent<HTMLButtonElement>) => {
         event.preventDefault();
@@ -225,6 +228,7 @@ export default function IdentifierInformation(props: Readonly<Props>) {
 
                     <Button
                         variant="contained"
+                        onClick={() => setShowUpdateDialog(true)}
                         sx={{
                             position: 'absolute',
                             bottom: '10px',
@@ -239,6 +243,9 @@ export default function IdentifierInformation(props: Readonly<Props>) {
 
                 </Stack>
             </Stack>
+
+            <UpdateidentifierInformation open={showUpdateDialog} setOpen={setShowUpdateDialog} selectedIdentifier={props.selectedIdentifier} refreshList={props.refreshList}/>
+
         </Stack>
     );
 }

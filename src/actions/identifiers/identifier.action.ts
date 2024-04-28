@@ -5,7 +5,7 @@ import crypto from 'crypto-js';
 
 const prisma = new PrismaClient();
 
-const SECRET_KEY = 'jgnqiuhfdgbiuqdsbfgiuqbdfigbiqsdfbgiqbdsfijgbqijdfbgiqbdfgbqfdijgbqijf';
+const SECRET_KEY = process.env.CRYPTO_SECRET || 'secret';
 
 const encryptPassword = (password: string) => {
     return crypto.AES.encrypt(password, SECRET_KEY).toString();
@@ -49,6 +49,21 @@ export const createIdentifier = async (userMail: string, label: string, username
             username: username,
             password: encryptedPassword,
             userId: userId!.id
+        }
+    });
+}
+
+export const updateIdentifier = async (id: string, label: string, username: string, password: string) => {
+    const encryptedPassword = encryptPassword(password);
+
+    return prisma.identifier.update({
+        where: {
+            id: parseInt(id)
+        },
+        data: {
+            label: label,
+            username: username,
+            password: encryptedPassword
         }
     });
 }

@@ -26,7 +26,7 @@ export default function Dashboard() {
     const [selectedIdentifier, setSelectedIdentifier] = useState<any>(null);
     const [searchValue, setSearchValue] = useState('');
     const [token, setToken] = useState('' as string);
-    const {decodedToken, isExpired} = useJwt<DecodedToken>(token!);
+    const {decodedToken} = useJwt<DecodedToken>(token!);
     const router = useRouter();
 
     useEffect(() => {
@@ -176,7 +176,7 @@ export default function Dashboard() {
                                         }}
                                     >
 
-                                        <IdentifierInformation selectedIdentifier={selectedIdentifier}/>
+                                        <IdentifierInformation selectedIdentifier={selectedIdentifier} refreshList={refreshList}/>
 
                                     </Stack>
                                 </>

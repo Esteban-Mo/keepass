@@ -22,7 +22,7 @@ export default function NavMenu(props: Props) {
     const [file, setFile] = useState<File | null>(null);
     const [openModal, setOpenModal] = useState(false);
     const [token, setToken] = useState('' as string);
-    const {decodedToken, isExpired} = useJwt<DecodedToken>(token!);
+    const {decodedToken} = useJwt<DecodedToken>(token!);
 
     useEffect(() => {
         setToken(sessionStorage.getItem('token') as string);
@@ -159,13 +159,18 @@ export default function NavMenu(props: Props) {
                     }}>
 
                         <IconButton
-                            sx={{color: 'rgba(232,232,232,0.87)', fontSize: '0.9em', justifyContent: 'center'}}
-                            onClick={handleExportData}
-                            disabled={props.listPassword.length === 0}
+                            sx={{
+                                color: props.listPassword.length === 0 ? 'rgba(232,232,232,0.3)' : 'rgba(232,232,232,1)',
+                                fontSize: '0.9em',
+                                justifyContent: 'center',
+                                backgroundColor: props.listPassword.length === 0 ? 'transparent' : 'initial'
+                            }}
+                            onClick={props.listPassword.length > 0 ? handleExportData : () => {}}
                         >
                             <Download/>
                             Exporter
                         </IconButton>
+
 
                         <IconButton
                             component="label"
